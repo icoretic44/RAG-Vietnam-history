@@ -5,7 +5,7 @@
 
 This repository implements a **Retrieval-Augmented Generation (RAG)** pipeline to explore and analyze Vietnam's resistance battles against the French Empire. The RAG system integrates **Gemini API** calls and **Tavily Search** to embed and retrieve information from both local documents and the internet.
 
-The pipeline allows users to extract data from PDF files, embed it into a vector database (Chroma), and perform searches or retrievals to generate meaningful insights using advanced retrieval techniques.
+The pipeline allows users to extract data from PDF files, embed it into a vector database (FAISS), and perform searches or retrievals to generate meaningful insights using advanced retrieval techniques.
 
 ## Overview
 
