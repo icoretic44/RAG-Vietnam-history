@@ -10,19 +10,13 @@ from langchain_community.vectorstores import FAISS
 load_dotenv()
 
 PDF_FOLDER_PATH = "PDF"
-VECTORSTORE_PATH = "faiss_index" # FAISS index will be saved here
+VECTORSTORE_PATH = "faiss_index" 
 
 # === CHOOSE YOUR EMBEDDING MODEL ===
-# Ensure this is the same model used in app.py
 EMBEDDING_MODEL_NAME = "bkai-foundation-models/vietnamese-bi-encoder"
-# Alternatives (often more robust for retrieval with default HuggingFaceEmbeddings settings):
-# EMBEDDING_MODEL_NAME = "BAAI/bge-m3"
-# EMBEDDING_MODEL_NAME = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
 
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 150
-# Use 'cpu' for broader compatibility, especially with 8GB RAM.
-# Change to 'cuda' if you have a dedicated GPU and appropriate drivers.
 DEVICE_SETTING = 'cpu'
 
 def ingest_documents():
