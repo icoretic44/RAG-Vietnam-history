@@ -14,15 +14,15 @@ from langchain.agents import AgentExecutor, create_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.tools.retriever import create_retriever_tool
 from langchain import hub
-from langchain.tools.render import render_text_description_and_args # For rendering tools with args
+from langchain.tools.render import render_text_description_and_args 
 
-st.set_page_config(page_title="Hỏi Đáp Lịch Sử VN", layout="wide")
-# --- Configuration (Same as before) ---
+st.set_page_config(page_title="Hỏi Đáp Lịch Sử VN", layout="wide") #st config should be the first place
+
 load_dotenv()
 VECTORSTORE_PATH = "faiss_index"
 EMBEDDING_MODEL_NAME = "bkai-foundation-models/vietnamese-bi-encoder"
 DEVICE_SETTING_EMBEDDINGS = 'cpu'
-USE_OLLAMA = False
+USE_OLLAMA = False #False to use Gemini
 OLLAMA_MODEL = "gemma:2b"
 GEMINI_MODEL = "gemini-2.0-flash"
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
@@ -35,7 +35,7 @@ if not USE_OLLAMA and not GOOGLE_API_KEY:
     st.error("Khóa API Google chưa được đặt...")
     st.stop()
 
-# --- Load Resources (Same as before, ensure functions are correctly defined) ---
+# --- Load Resources 
 @st.cache_resource
 def load_embeddings_app(model_name):
     print(f"App: Đang tải mô hình nhúng: {model_name}")
@@ -124,28 +124,10 @@ if vectorstore_app and llm_app:
     tools = [retriever_tool, tavily_tool]
 
     # 4. Get the Agent Prompt Template from LangChain Hub
-    # The "hwchase17/react" prompt is designed to work with `create_react_agent`
-    # It expects "input", "agent_scratchpad", "tools", and "tool_names"
     try:
         prompt = hub.pull("hwchase17/react")
-
-        # Customize the prompt for Vietnamese and specific instructions
-        # The ReAct prompt usually has a structure where instructions are part of the template
-        # We'll append instructions to the existing template.
-        # This is a common way, but for some hub prompts, you might need to inspect their specific structure.
         if isinstance(prompt, ChatPromptTemplate):
-            # If it's a ChatPromptTemplate, we might need to modify the system message
-            # or ensure the human message template can accommodate our extra instructions.
-            # For ReAct, the main instructions often go into the part that becomes the system message
-            # or directly into the initial human message format for the LLM.
-            # Let's try to add to the overall template structure, as ReAct is often string-based internally.
-            # A more robust way for ChatPromptTemplate would be to find the SystemMessagePromptTemplate
-            # and append to its template string.
-            pass # We will let create_react_agent handle the tools and tool_names
-                 # and we'll rely on the LLM's general instruction following for language.
-                 # Adding a specific Vietnamese instruction here can be tricky with generic hub prompts.
-                 # It's often better handled by a final formatting step or by choosing an LLM known to follow language instructions well.
-
+            pass 
         elif isinstance(prompt, PromptTemplate) and isinstance(prompt.template, str):
              if "\nHãy luôn trả lời bằng tiếng Việt." not in prompt.template:
                 prompt.template = prompt.template + "\nHãy luôn trả lời bằng tiếng Việt. Ưu tiên sử dụng 'tim_kiem_tai_lieu_lich_su_viet_nam_pdf' trước cho các câu hỏi lịch sử Việt Nam."
@@ -194,10 +176,6 @@ if vectorstore_app and llm_app:
             thinking_process = "" # To capture agent's thoughts
             with st.spinner("Agent đang xử lý..."):
                 try:
-                    # For ReAct, the input to invoke is a dictionary, typically with an "input" key.
-                    # The agent_scratchpad, tools, and tool_names are handled by the AgentExecutor
-                    # based on how the prompt is structured and the agent is created.
-                    # No need to pass tools and tool_names to invoke directly here.
                     result = st.session_state.agent_executor.invoke(
                         {"input": user_query}
                     )
